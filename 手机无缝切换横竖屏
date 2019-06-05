@@ -1,0 +1,4 @@
+        Screen.autorotateToLandscapeLeft = false;   //手机左横向
+        Screen.autorotateToLandscapeRight = false;  //手机右横向
+        Screen.autorotateToPortrait = false;        //手机上垂直
+        Screen.autorotateToPortraitUpsideDown = false;//手机下垂直
