@@ -1,0 +1,117 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class State
+{
+    public string type;
+    public StateMachine stateMachine;
+    public State(string type)
+    {
+        this.type = type;
+    }
+    public virtual void Enter()
+    {
+    }
+    public virtual void Updata()
+    {
+    }
+    public virtual void End()
+    {
+    }
+
+}
+public class StateMachine
+{
+    public State[] states;
+    public State currentState;
+    public StateMachine(State[] states)
+    {
+        this.states = states;
+        currentState = states[0];
+        currentState.Enter();
+    }
+    public void SwitchState(string type)
+    {
+        for (int i = 0; i < states.Length; i++)
+        {
+            if (states[i].type == type)
+            {
+                currentState.End();
+                currentState = states[i];
+                currentState.Enter();
+            }
+        }
+    }
+    public void Updata()
+    {
+        currentState.Updata();
+    }
+}
+
+
+//********************************
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+public enum MoriStateType { Idle,Run,Attack,Jump,SkillA,SkillS,SkillF,SkillD,Death,长度}
+public class Mori_State : State
+{
+    public Mori_StateMachine mori_StateMachine;
+    public Mori_State(string type) : base(type)
+    {
+
+    }
+    
+   
+}
+
+public class Mori_StateMachine : Character_StateMachine
+{
+    public Mori mori;
+    public static State GetState(MoriStateType type)
+    {
+        switch (type)
+        {
+            case MoriStateType.Idle:
+                return new Mori_Idle();
+            case MoriStateType.Run:
+                return new Mori_Run();
+            case MoriStateType.Attack:
+                return new Mori_Attack();
+            case MoriStateType.Jump:
+                return new Mori_Jump();
+            case MoriStateType.SkillA:
+                return new Mori_SkillA();
+            case MoriStateType.SkillS:
+                return new Mori_SkillS();
+            case MoriStateType.SkillF:
+                return new Mori_SkillF();
+            case MoriStateType.SkillD:
+                return new Mori_SkillD();
+            case MoriStateType.Death:
+                return new Mori_Death();
+            default:
+                return null;
+        }
+    }
+    public static State[] GetStates()
+    {
+        State[] states = new State[(int)MoriStateType.长度];
+        for (int i = 0; i < (int)MoriStateType.长度; i++)
+        {
+            states[i] = GetState((MoriStateType)i);
+        }
+        return states;
+    }
+    public Mori_StateMachine(Mori mori) : base(GetStates(),  mori)
+    {
+        this.mori = mori;
+        for (int i = 0; i < states.Length; i++)
+        {
+            (states[i] as Mori_State).mori_StateMachine = this;
+        }
+    }
+
+}
